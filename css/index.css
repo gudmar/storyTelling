@@ -1,0 +1,141 @@
+*{
+    --blue: #124191;
+    --font-white: rgb(230, 230, 230);
+    --cube-color: #ffffffcc;
+
+    --button-background: rgb(230, 230, 230);
+    --button-color: black;
+    --button-hover: rgb(190, 190, 190);
+    --button-active: rgb(210, 150, 210);
+}
+.root{
+    background-color: var(--blue);
+    /* width: 95vw; */
+    height: 95vh;
+}
+.wrapper{
+    flex-wrap: wrap;
+}
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+.left{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;    
+}
+.justify{
+    text-align: justify;
+}
+.column{
+    flex-direction: column;
+}
+.row{
+    flex-direction: row;
+}
+
+
+.cubes-layout{
+    flex-direction: row;
+}
+.button {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background-color: var(--button-background);
+    color: var(--button-color);
+}
+.button:hover {
+    background-color: var(--button-hover);
+    cursor: pointer;
+}
+.button:active {
+    background-color: var(--button-active);
+    cursor: pointer;    
+}
+
+
+.quick-button{
+    position: relative;
+    width: 3rem;
+    height: 3rem;
+    font-size: 2rem;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 50%;
+    color: black;
+    background-color: rgb(200,200,200);
+    transition: 250ms;
+    margin: 1rem;
+}
+.quick-button:hover{
+    cursor: pointer;
+    background-color: dimgray;
+    color: white;
+    transition: 250ms;
+}
+.quick-button:active{
+    background-color: goldenrod;
+    color: black;
+    transition: 250ms;
+    transform: scale(0.9);
+}
+
+
+*::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+*::-webkit-scrollbar
+{
+  width: 10px;
+  background-color: #F5F5F5;
+}
+
+*::-webkit-scrollbar-thumb
+{
+  background-color: #bbb;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  /* border: 2px solid #555555; */
+}
+.cube-wrapper{
+    max-width: 800px;
+}
+cube-logo{
+    margin-bottom: 15rem;
+}
+
+@media (max-width: 600px){
+    .cubes-layout{
+        flex-direction: column;
+    }
+    cube-logo{
+        /* display: none; */
+        margin-bottom: 1rem;
+    }
+    .quick-button {
+        width: 35px;
+        height: 35px;
+        background-color: yellow;
+    }
+}
+@media (max-width: 750px){
+    cube-logo{
+        display: none;
+    }
+}
+@media (max-height: 750px){
+    cube-logo{
+        margin-bottom: 1rem;
+    }
+}
+@media (max-height: 500px){
+    cube-logo{
+        display: none;
+    }
+}

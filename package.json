@@ -1,0 +1,16 @@
+{
+  "name": "cv_2021",
+  "version": "1.0.0",
+  "description": "CV",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marek Gudalewicz",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-inline": "^0.1.3"
+  }
+}
