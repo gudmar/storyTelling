@@ -1,0 +1,2457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta author="Marek Gudalewicz">
+    <title>StoryCubes</title>
+    <style>
+*{
+    --blue: #124191;
+    --font-white: rgb(230, 230, 230);
+    --cube-color: #ffffffcc;
+
+    --button-background: rgb(230, 230, 230);
+    --button-color: black;
+    --button-hover: rgb(190, 190, 190);
+    --button-active: rgb(210, 150, 210);
+}
+.root{
+    background-color: var(--blue);
+    /* width: 95vw; */
+    height: 95vh;
+}
+.wrapper{
+    flex-wrap: wrap;
+}
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+.left{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;    
+}
+.justify{
+    text-align: justify;
+}
+.column{
+    flex-direction: column;
+}
+.row{
+    flex-direction: row;
+}
+
+
+.cubes-layout{
+    flex-direction: row;
+}
+.button {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background-color: var(--button-background);
+    color: var(--button-color);
+}
+.button:hover {
+    background-color: var(--button-hover);
+    cursor: pointer;
+}
+.button:active {
+    background-color: var(--button-active);
+    cursor: pointer;    
+}
+
+
+.quick-button{
+    position: relative;
+    width: 3rem;
+    height: 3rem;
+    font-size: 2rem;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 50%;
+    color: black;
+    background-color: rgb(200,200,200);
+    transition: 250ms;
+    margin: 1rem;
+}
+.quick-button:hover{
+    cursor: pointer;
+    background-color: dimgray;
+    color: white;
+    transition: 250ms;
+}
+.quick-button:active{
+    background-color: goldenrod;
+    color: black;
+    transition: 250ms;
+    transform: scale(0.9);
+}
+
+
+*::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+*::-webkit-scrollbar
+{
+  width: 10px;
+  background-color: #F5F5F5;
+}
+
+*::-webkit-scrollbar-thumb
+{
+  background-color: #bbb;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  /* border: 2px solid #555555; */
+}
+.cube-wrapper{
+    max-width: 800px;
+}
+cube-logo{
+    margin-bottom: 15rem;
+}
+
+@media (max-width: 600px){
+    .cubes-layout{
+        flex-direction: column;
+    }
+    cube-logo{
+        /* display: none; */
+        margin-bottom: 1rem;
+    }
+    .quick-button {
+        width: 35px;
+        height: 35px;
+        background-color: yellow;
+    }
+}
+@media (max-width: 750px){
+    cube-logo{
+        display: none;
+    }
+}
+@media (max-height: 750px){
+    cube-logo{
+        margin-bottom: 1rem;
+    }
+}
+@media (max-height: 500px){
+    cube-logo{
+        display: none;
+    }
+}
+
+</style>
+    <style>
+*{
+    --cube-color: black;
+    --cube-background: #ffffffcc;
+}
+.cube{
+    background-color: var(--cube-background);
+    position: relative;
+    color: var(--cube-color);
+    border-radius: 20px;
+    width: 100px;
+    height: 100px;
+    font-size: 80px;
+    margin:  1rem;
+    transition: 250ms;
+}
+
+.cube:hover{
+    cursor: pointer;
+    background-color: yellowgreen;
+    transition: 250ms;
+}
+.cube:active{
+    transition: 250ms;
+    transform: scale(0.9);
+}
+
+@media(max-width: 750px) and (max-height: 750px){
+    .cube {
+        width: 70px;
+        height: 70px;
+        font-size: 55px;
+        transition: 250ms;
+        margin: 0.5rem;
+    }
+}
+</style>
+    <style>
+/* .quick-button{
+    position: relative;
+    width: 3rem;
+    height: 3rem;
+    font-size: 2rem;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 50%;
+    color: black;
+    background-color: rgb(200,200,200);
+    transition: 250ms;
+    margin: 1rem;
+}
+.quick-button:hover{
+    cursor: pointer;
+    background-color: dimgray;
+    color: white;
+    transition: 250ms;
+}
+.quick-button:active{
+    background-color: goldenrod;
+    color: black;
+    transition: 250ms;
+    transform: scale(0.9);
+} */
+/* quick button definitions in index.css */
+
+.quick-menu{
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.modal-cover{
+    font-family: Arial, Helvetica, sans-serif;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(250, 250, 250, 0.5);
+    top:0;
+    left:0;
+}
+.modal-body{
+    position: relative;
+    width: 60%;
+    max-width: 800px;
+    height: 60%;
+    background-color: rgb(200,200,200);
+    border-radius: 10px;
+    transition: 250ms;
+}
+.modal-title-bar{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    height: 3rem;
+}
+.modal-content{
+    position: relative;
+    height:  calc( 100% - 6rem );
+    padding: 1rem;
+    overflow: auto;
+}
+.modal-shut-button{
+    width: 2rem;
+    height: 2rem;
+    font-size: 2rem;
+    background-color: red;
+    color: white;
+}
+.text-big{
+    font-size: 1.5rem;
+    text-align: justify;
+}
+
+@media (max-width: 750px){
+    .modal-body {
+        width: 90%;
+        height: 90%;
+    }
+    .modal-shut-button{
+        width: 4rem;
+        height: 4rem;
+        font-size: 3rem;
+    }
+    .modal-title-bar {
+        height: 6rem;
+    }
+    .modal-content{
+        height: calc(100% - 9rem);
+    }
+}
+</style>
+    <style>
+.settings-wrapper{
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    position: relative;
+}
+.list-of-settings{
+    position: relative;
+    /* height: 100%; */
+    width: 200px;
+    margin-bottom: 2rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    display: flex;
+    flex-direction: column;
+
+}
+.settings-wrapper slide-box{
+    margin: 20px;
+}
+.list-of-settings-title{
+    font-weight: bold;
+}
+
+@media (max-width: 750px) {
+    .list-of-settings>slide-box{
+        margin-bottom: 4rem;
+    }
+    .settings-wrapper{
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .list-of-settings{
+        margin-bottom: 1rem;
+    }
+
+}
+</style>
+    <style>
+/* .modal-cover{
+    font-family: Arial;
+    font-size: 1.8rem;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 1000;
+} */
+/* .modal-content {
+    position: relative;
+    width: 70vw;
+//                height: 40vh;
+    background-color: rgb(230, 230, 230);
+    color: black;
+    padding: 1.5rem;
+    overflow: auto;
+} */
+
+.entry{
+    margin: 1rem;
+    justify-content: flex-start;
+}
+.entry>.color{
+    margin-right: 1rem;
+}
+.color{
+    position: relative;
+    width: 8rem;
+    border-radius: 10px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+.color-green{
+    background-color: green;
+    color: white;
+}
+.color-none{
+    background-color: transparent;
+    border: solid black thin;
+}
+.color-yellow{
+    background-color: yellow;
+    color: black;
+}
+.color-red{
+    background-color: red;
+    color: white;
+}
+.color-black{
+    background-color: black;
+    color: white
+}
+.tale-structure{
+    margin-right: 2rem;
+}
+.tale-structure-content{
+    position: relative;
+    width: 10rem;
+    border: solid thin black;
+}
+.tale-structure-begin{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 5rem;
+}
+.tale-structure-ending{
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    height: 5rem;
+}
+.tale-structure-body{
+    height: 10rem;
+}
+.label{
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    width: 23rem;
+}
+.skull{
+    font-size: 4rem;
+}
+</style>
+    <script defer>
+class AbstractElement extends HTMLElement{
+    constructor(){
+        super();
+        this._setShadowInnerHTML();
+        const observer = new MutationObserver(this._onInnerHTMLChange.bind(this))
+        observer.observe(this, 
+            {
+                subtree: false,
+                childList: true
+            }
+        )
+    }
+    static get observedAttributes() {
+        return ['data-height', 'data-width', 'data-max-height']
+    }
+    _onInnerHTMLChange(){
+        
+    }
+    _swapInnerHtmlContent(htmlString, destinationElement){
+        let template = document.createElement('template');
+        template.innerHTML = htmlString;
+        destinationElement.innerText = '';
+        destinationElement.appendChild(template.content.cloneNode(true));
+    }
+    _setShadowInnerHTML() {
+        let template = document.createElement('template');
+        let sh = this.attachShadow({mode: 'open'});
+        template.innerHTML = this._getTemplate();
+        sh.appendChild(template.content.cloneNode(true));
+    }
+    _changeElementClassName(classNameToDelete, classNameToAdd, element) {
+        element.classList.remove(classNameToDelete)
+        element.classList.add(classNameToAdd)
+    }
+    _isNotNullOrUndefined(value){
+        return (value == null || value == undefined)?false:true;
+    }
+    _setAttribute(valueFromConstructor, propsName, defaultValue){
+        let valueFromProps = this.getAttribute(propsName);
+        if (this._isNotNullOrUndefined(valueFromProps)){
+
+            return valueFromProps
+        } else if (this._isNotNullOrUndefined(valueFromConstructor)) {
+            return valueFromConstructor
+        } else {
+            return defaultValue
+        }
+        if (this._isNotNullOrUndefined(relatedState)) {
+            NiceLogger.logInfo(`${this.constructor.name}: ${relatedState} is not defined`)
+        }
+    }
+}
+</script>
+    <script defer>
+class CubeLogo extends AbstractElement{
+    constructor(){
+        super()
+    }
+    _onInnerHTMLChange(){
+        let logoAnchor = this.shadowRoot.querySelector('.cube-logo-content');
+        logoAnchor.innerHTML = this._createLogoFromInnerText()
+    }
+    _getTemplate(){
+        return `
+            <style>
+                .cube-logo-content{
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                }
+                .cube-logo-word{
+                    display: flex;
+                    flex-direction: row;       
+                    margin-right: 2rem;  
+                    margin-bottom: 2rem;                               
+                }
+                .cube-logo-symbol{
+                    font-family: Arial;
+                    border-radius: 5px;
+                    width: 2rem;
+                    height: 2rem;
+                    font-size: 1.8rem;
+                    font-weight: bold;
+                    color: black;
+                    position: relative;
+                    padding: 0.2rem;
+                    margin: 0.2rem;
+                }
+                .center{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    align-content: center;
+                }
+                media(max-height: 600px){
+                    .cube-logo-content{
+                        display: none;
+                    }
+                }
+                
+            </style>
+            <div class="cube-logo-content center">
+                ${this._createLogoFromInnerText()}
+            </div>
+        `
+    }
+    _arrayInfiniteIterator(arr){
+        let internalArray = arr
+        let i = 0;
+        return {
+            next: function(){
+                i++;
+                if (i > internalArray.length - 1) {i = 0}
+                return {
+                    value: internalArray[i],
+                    done: false
+                }
+            }
+        }
+    }
+    _angleGenerator(){
+        return this._arrayInfiniteIterator(['-10deg', '10deg', '-15deg', '20deg', '10deg', '0deg', '7deg'])
+    }
+    _backgroundColorGenerator(){
+        return this._arrayInfiniteIterator(['rgb(250, 100, 100)', 'rgb(100, 250, 100)', 'rgb(200, 200, 100)', 'rgb(100, 100, 220)'])
+    }
+    _singleCubeStylingGenerator(){
+        let angleGen = this._angleGenerator();
+        let colorGen = this._backgroundColorGenerator();
+        return {
+            next: function() { return `background-color: ${colorGen.next().value}; transform: rotateZ(${angleGen.next().value})`}
+        }
+    }
+    _getSingleCube(symbol){
+        this.symbolStyleGenerator = this.symbolStyleGenerator == undefined?this._singleCubeStylingGenerator():this.symbolStyleGenerator;
+        return `
+            <span class = "cube-logo-symbol center" style="${this.symbolStyleGenerator.next()}">
+                ${symbol}
+            </span>
+        `.trim();
+    }
+    _makeAllWords(text) {
+        let wordsArray = text.split(' ')
+        let output = ``;
+        let getSingleWord = function(word){
+            return `
+            <span class="cube-logo-word">
+                ${this._makeSingleWord(word)}
+            </span>
+            `
+        }.bind(this)
+        console.log(wordsArray)
+        for (let word of wordsArray){
+            output = output + getSingleWord(word)
+        }
+        return output;
+    }
+    _makeSingleWord(captionAsString){
+        let output = ''
+        for(let letter of captionAsString){
+            output = output + this._getSingleCube(letter)
+        }
+        return output;
+    }
+
+    _createLogoFromInnerText(){
+        return this._makeAllWords(this.innerHTML)
+    }
+
+
+}
+
+customElements.define('cube-logo', CubeLogo)
+</script>
+    <script defer>
+class NiceLogger{
+    static logInfo(message){
+        console.log('%c' + message, "background-color: blue; color: white; font-weight: bold; padding: 5px; border-radius: 4px;")
+    }
+    static logError(message){
+        console.log('%c' + message, "background-color: red; color: white; font-weight: bold; padding: 5px; border-radius: 4px;")
+    }
+    static logWarn(message) {
+        console.log('%c' + message, "background-color: orange; color: black; font-weight: bold; padding: 5px; border-radius: 4px;")
+    }
+    static logOk(message) {
+        console.log('%c' + message, "background-color: green; color: white; font-weight: bold; padding: 5px; border-radius: 4px;")
+    }
+
+    static logBlack(message) {
+        console.log('%c' + message, "background-color: black; color: white; font-weight: bold; padding: 5px; border-radius: 4px;")
+    }
+    static logBlank(message) {
+        console.log('%c' + message, "background-color: white; color: gray; font-weight: bold; padding: 5px; border-radius: 4px;")
+    }
+
+    
+}
+</script>
+    <script defer>
+
+
+class Slider extends AbstractElement{
+    constructor(initialStateOn, label) {
+        super()
+        this.stateOn = this._setAttribute(initialStateOn, 'data-is-on', false);
+        this.label = this._setAttribute(label, 'data-label', 'slider')
+        this.okSymbol = '&#10004;';
+        this.nokSymbol = '&#10007;';
+    }
+
+    static get observedAttributes() {
+        return ['data-is-on', 'data-label']
+    }
+
+    _getOnOffClassName(){
+        return this.stateOn?'slider-on':'slider-off'
+    }
+    _getTemplate(){
+        return `
+            <style>
+                *{
+                    box-sizing: border-box;
+                    --slider-width: 60px;
+                    --slider-height: 20px;
+                }
+                :host{
+                    display: inline-block;
+                    width: calc( 2.5 * var(--slider-width));
+                    position: relative;
+                }
+                .center{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    align-content: center;
+                }
+                .slider-wrapper{
+                    --slider-width: 60px;
+                    --slider-height: 20px;
+                    --slider-movable-size: 25px;
+                    --background-gray: rgb(220, 220, 220);
+                    --color-on: rgb(100, 180, 100);
+                    --color-off: rgb(180, 100, 100);
+                    --color-on-hover: rgb(10, 250, 10);
+                    --color-off-hover: rgb(250, 10, 10);
+                    font-family: Arial;
+                    position: relative;
+                    display: flex;
+                    flex-direction: row;
+                    width: calc( 2.5 * var(--slider-width));
+                    justify-content: space-between;
+                }
+                .slider-wrapper:hover{
+                    transition: 0.25s;
+                    cursor: pointer;
+                }
+                .slider-wrapper:hover>.slider-track.slider-on{
+                    background-color: var(--color-on-hover);
+                }
+                .slider-wrapper:hover>.slider-track.slider-off{
+                    background-color: var(--color-off-hover);
+                }
+                .slider-wrapper:hover .slider-on-off-label.slider-on{
+                    background-color: var(--color-on-hover);
+                    color: black;
+                }
+                .slider-wrapper:hover .slider-on-off-label.slider-off{
+                    background-color: var(--color-off-hover);
+                    color: black;
+                }
+                .slider-track{
+                    position: relative;
+                    width: var(--slider-width);
+                    height: var(--slider-height);
+                    border-radius: calc( var(--slider-height) / 2 );
+                    background-color: #124191;
+                    transition: 0.25s;
+                    box-shadow: inset 0 0 5px #222;
+                }
+                .slider-track.slider-on{
+                    background-color: var(--color-on);
+                }
+                .slider-track.slider-off{
+                    background-color: var(--color-off);
+                }
+                .slider-movable{
+                    position: absolute;
+                    transition: 0.25s;
+                    width: calc( var(--slider-movable-size) + 5px);
+                    height: calc( var(--slider-movable-size) + 5px); 
+                    border-radius: 50%;
+                    background-color: var(--background-gray);
+                    top: -25%;
+                    box-shadow: inset 0 0 5px #777;
+                }
+                .slider-movable.slider-off{
+                    position: absolute;
+                    left:0;
+                }
+                .slider-movable.slider-on{
+                    position: absolute;
+                    left: calc( var(--slider-width) - var(--slider-movable-size));
+                }
+                .slider-on-off-label{
+                    color: white;
+                    position: relative;
+                    width: var(--slider-movable-size);
+                    height: var(--slider-movable-size);
+                    border-radius: 50%;
+                    font-size: 13px;
+                    transition: 0.25s;
+                    box-shadow: inset 0 0 5px #222;
+                }
+                .slider-on-off-label.slider-on{
+                    background-color: var(--color-on);
+                }
+                .slider-on-off-label.slider-off{
+                    background-color: var(--color-off);
+                }
+
+            </style>
+            <div>
+            <div class = 'slider-wrapper center'>
+                <div class = "slider-track ${this._getOnOffClassName()}">
+                    <div class = "slider-movable ${this._getOnOffClassName()} center">
+                        <div class = "${this._getOnOffClassName()} slider-on-off-label center">
+                            ${this.nokSymbol}
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-label">
+                    ${this.label}
+                </div>
+            </div>
+            </div>
+        `
+    }
+
+    _changeLabel(newLabel){
+        this.shadowRoot.querySelector('.slider-label').innerHTML = newLabel;
+    }
+    // _changeIsOnAttribute(newValue){
+    //     this.setAttribute('data-is-on', newValue)
+    // }
+
+    _changeViewToOn(){
+        let changeClassToOn = function(element) { this._changeElementClassName('slider-off', 'slider-on', element)}.bind(this)
+        changeClassToOn(this.shadowRoot.querySelector('.slider-track'))
+        changeClassToOn(this.shadowRoot.querySelector('.slider-movable'))
+        changeClassToOn(this.shadowRoot.querySelector('.slider-on-off-label'))
+        this.shadowRoot.querySelector('.slider-on-off-label').innerHTML = this.okSymbol;
+    }
+    _changeViewToOff(){
+        let changeClassToOff = function(element) { this._changeElementClassName('slider-on', 'slider-off', element)}.bind(this)
+        changeClassToOff(this.shadowRoot.querySelector('.slider-track'))
+        changeClassToOff(this.shadowRoot.querySelector('.slider-movable'))
+        changeClassToOff(this.shadowRoot.querySelector('.slider-on-off-label'))
+        this.shadowRoot.querySelector('.slider-on-off-label').innerHTML = this.nokSymbol;
+    }
+    _toggleIsOnView(){
+        if (this.stateOn) {
+            this._changeViewToOn();
+        } else {
+            this._changeViewToOff()
+        }
+    }
+    _setIsOnState(val) {
+        switch(val) {
+            case 'true':
+                this.stateOn = true;
+                break;
+            case 'false':
+                this.stateOn = false;
+                break;
+            case undefined:
+                this.stateOn = false;
+                break;
+            case null:
+                this.stateOn = false;
+                break;
+            default:
+                throw new TypeError(`${this.constructor.name}: ${val} is unsupported data-is-on attrubite value`)
+        }
+    }
+    _emitStateOnChangeEvent(){
+        let e = new CustomEvent('stateOnChanged', {
+            detail: {
+                newOnState: this.stateOn,
+                name: this.label
+            }
+        })
+        this.dispatchEvent(e)
+    }
+    _emitLabelChangedEvent(oldValue, newValue){
+        let e = new CustomEvent('labelChanged', {
+            detail: {
+                newLabel: newValue,
+                oldLabel: oldValue
+            }
+        })
+        this.dispatchEvent(e)
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name == 'data-is-on') {
+            // console.log(`${this.label} state changed to ${this.stateOn}`)
+            this._setIsOnState(newValue);
+            this._toggleIsOnView();
+            this._emitStateOnChangeEvent();
+        } else if (name == 'data-label') {
+            this._changeLabel(newValue)
+            this._emitLabelChangedEvent(oldValue, newValue)
+        }
+    }
+    connectedCallback(){
+        let toggleStateOnAttribute = function(){
+            let nextValue = true;
+            let currentValue = this.getAttribute('data-is-on');
+            if (!this._isNotNullOrUndefined(currentValue)) {
+                nextValue = true
+            } else if (currentValue == 'false') {
+                nextValue = true
+            } else if (currentValue == 'true') {
+                nextValue = false
+            }
+            this.setAttribute('data-is-on', nextValue);
+        }.bind(this)
+        let setInitialLabel = function(){
+            this._changeLabel(this.label)
+        }.bind(this)
+        let setInitialIsOnState = function(){
+            this.setAttribute('data-is-on', this.stateOn)
+        }.bind(this)
+
+        setInitialLabel();
+        // setInitialIsOnState();
+        this.shadowRoot.querySelector('.slider-wrapper').addEventListener('click', toggleStateOnAttribute);
+    }
+
+
+
+
+}
+customElements.define('slide-box', Slider)
+
+
+
+class RadioGroup extends HTMLElement{
+
+}
+</script>
+    <script defer>
+
+
+class MultipositionalSlider extends AbstractElement{
+    constructor(label, labelSet, initialPosition) {
+        super()
+        this.label = this._setAttribute(label, 'data-label', 'slider');
+        this.position = this._setAttribute(initialPosition, 'data-position', false);
+        this.labelSet = this._setAttribute(labelSet, 'data-label-set', ['1', '2', '3', '4' ,'5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']);
+        this.SINGLE_SECTION_HEIGHT = 50;
+        this.PLACEHOLDER_SIZE = 25;
+    }
+
+    static get observedAttributes() {
+        return ['data-position', 'data-label', 'data-label-set']
+    }
+
+    _getLabel() {
+        return this.label==undefined?'slider':this.label
+    }
+    _getPosition(){
+        return this.position==undefined?`${this._getLabelSet()[0]}`:this.position
+    }
+    _attribute2Array(listOfStirngs){
+        return listOfStirngs.split(',')
+    }
+    _getLabelSet() {
+        if (this.getAttribute('data-label-set') != undefined) {
+            this.labelSet = this._attribute2Array(this.getAttribute('data-label-set'))
+        }
+        return this.labelSet==undefined?['1', '2', '3', '4' ,'5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']:this.labelSet
+    }
+
+    _get_SINGLE_SECTION_HEIGHT(){
+        return this.SINGLE_SECTION_HEIGHT==undefined?50:this.SINGLE_SECTION_HEIGHT
+    }
+    _get_PLECEHOLDER_SIZE(){
+        return this.PLACEHOLDER_SIZE==undefined?25:this.PLACEHOLDER_SIZE;
+    }
+
+
+    _getMutlisilderHeight(){
+        return this._getLabelSet().length * this._get_SINGLE_SECTION_HEIGHT() + 'px'
+    }
+
+    _restartWidget(){
+        this.shadowRoot.innerHTML = '';
+        let template = document.createElement('template')
+        template.innerHTML = this._getTemplate();
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
+        
+    }
+
+    _getTemplate(){
+        return `
+            <style>
+                *{
+                    box-sizing: border-box;
+                    --slider-width: 20px;
+                    --slider-height: ${this._getMutlisilderHeight()};
+                }
+                :host{
+                    position: relative;
+                }
+                .center{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    align-content: center;
+                }
+                .slider-movable{
+                    position: absolute;
+                    transition: 0.25s;
+                    width: calc( ${this._get_PLECEHOLDER_SIZE()}px + 0px);
+                    height: calc( ${this._get_PLECEHOLDER_SIZE()}px + 0px); 
+                    border-radius: 50%;
+                    border: none;
+                    padding: 0;
+                    background-color: var(--background-gray);
+                    top: -0%;
+                    left: -2px;
+                    box-shadow: inset 0 0 5px #777;
+                }
+                ${this._getCSSDefinitionsForEachPositionClass()}
+                ${this._getSetOfPositionHoverCSSDefinitions()}
+                ${this._getCSSForPositionClassesOfMovableSlider()}
+                .slider-movable{
+                    position: absolute;
+                }
+                .position-placeholder{
+                    // position: relative;
+                    left: -12%;
+                    border-radius: 50%;
+                    border: gray solid thin;
+                    width: ${this._get_PLECEHOLDER_SIZE()}px;
+                    height: ${this._get_PLECEHOLDER_SIZE()}px;
+                    box-shadow: inset 0 0 5px #777;
+                    z-index: 5;
+                }
+                .position-placeholder-label{
+                    position: relative;
+                    left: 40px;
+                }
+                .slider-wrapper{
+                    --slider-width: 50px;
+                    --slider-height: 20px;
+                    --slider-movable-size: ${this._get_PLECEHOLDER_SIZE()}px;
+                    --background-gray: rgb(220, 220, 220);
+                    --color-on: rgb(100, 180, 100);
+                    --color-off: rgb(180, 100, 100);
+                    --color-on-hover: rgb(10, 250, 10);
+                    --color-off-hover: rgb(250, 10, 10);
+                    --position-element-hover-bg: gray;
+                    font-family: Arial;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    width: calc( 2.5 * var(--slider-width));
+                    justify-content: space-between;
+                }
+
+                .slider-track{
+                    position: relative;
+                    width: var(--slider-width);
+                    height: var(--slider-height);
+                    border-radius: calc( var(--slider-width) / 2 );
+                    // background-color: #124191;
+                    transition: 0.25s;
+                    box-shadow: inset 0 0 5px #222;
+                }
+                .slider-label{
+                    margin-bottom: 1rem;
+                    font-weight: bold;
+                }
+
+            </style>
+            <div>
+            <div class = 'slider-wrapper center'>
+                <div class="slider-label">
+                    ${this.label}
+                </div>
+
+                <div class = "slider-track">
+                    <div class = "slider-movable ${this._getPositionClassName(this._getPosition())} center">
+                    </div>
+                    ${this._getAllPlaceholderElements()}
+                </div>
+            </div>
+            </div>
+        `
+    }
+    
+    
+    _getPositionClassName(positionLabel) {
+        return 'position-place--' + positionLabel
+    }
+
+
+
+    _getCSSDefinitionsForEachPositionClass(){
+        let output = '';
+        let allDefinitions = this._getSetOfPositionClasses_placeholder();
+        for (let item in allDefinitions) {
+            output = output + `
+                .${item}${allDefinitions[item]}
+            `
+        }
+        return output;
+    }
+
+    _getCSSForPositionClassesOfMovableSlider(){
+        let output = '';
+        let allDefinitions = this._getSetOfPositionClasses_movable();
+        for (let item in allDefinitions) {
+            output = output + `
+                ${item}${allDefinitions[item]}
+            `
+        }
+        return output;
+    }
+
+
+    _getSingleSliderPlaceholderElement(className){
+        return `<div class = 'position-placeholder ${className}'>
+                    <div class = "position-placeholder-label ${className}-label">
+                        ${className.split('-')[3]}
+                    </div>
+                </div>`.trim()
+    }
+    _getAllPlaceholderElements() {
+        let allDefinitions = this._getSetOfPositionClasses_placeholder();
+        let allKeys = Object.keys(allDefinitions);
+        let output = '';
+        for (let key of allKeys) {
+            output = output + this._getSingleSliderPlaceholderElement(key)
+        }
+        return output
+    }
+
+    _getSetOfPositionHoverCSSDefinitions(){
+        let positionClasses = {...this._getSetOfPositionClasses_placeholder()}
+        let output = '';
+        for(let item in positionClasses){
+            output = output + `
+                .${item}:hover{
+                    background-color: var(--position-element-hover-bg);
+                    cursor: pointer
+                }
+                .${item}-label:hover .${item}{
+                    background-color: var(--position-element-hover-bg);
+                    cursor: pointer                    
+                }
+            `
+        }
+        return output
+    }
+
+    _getPlaceholderPosition(index){
+
+        let sectionSize = this._get_SINGLE_SECTION_HEIGHT();
+        let placeholderSize = this._get_PLECEHOLDER_SIZE() + 2;
+        let nrOfSections = this._getLabelSet().length - 1;
+        return 0*index + index * (sectionSize) + placeholderSize * (index / nrOfSections);
+
+    }
+
+    _getSetOfPositionClasses_placeholder() {
+        let output = {};
+        let createSingleClass = function(option, index, arr) {
+            output[`${this._getPositionClassName(option)}`] = `{position: absolute; top: ${this._getPlaceholderPosition(index)}px;}`
+        }.bind(this)
+        this._getLabelSet().forEach(createSingleClass)
+        return output;
+    }
+
+    _getSetOfPositionClasses_movable() {
+        let output = {};
+        let createSingleClass = function(option, index, arr) {
+            output[`.slider-movable.${this._getPositionClassName(option)}`] = `{position: absolute; top: ${this._getPlaceholderPosition(index)}px;}`
+        }.bind(this)
+        this._getLabelSet().forEach(createSingleClass)
+        return output;
+    }
+
+
+
+    _changeLabel(newLabel){
+        this.shadowRoot.querySelector('.slider-label').innerHTML = newLabel;
+    }
+
+
+
+    _emitStateOnChangeEvent(){
+        let e = new CustomEvent('stateOnChanged', {
+            detail: {
+                newPosition: this.position,
+                name: this.label
+            }
+        })
+        this.dispatchEvent(e)
+    }
+   
+   
+    _emitLabelChangedEvent(oldValue, newValue){
+        let e = new CustomEvent('labelChanged', {
+            detail: {
+                newLabel: newValue,
+                oldLabel: oldValue
+            }
+        })
+        this.dispatchEvent(e)
+    }
+
+
+
+
+
+    _getClassWithRightLabelOutOfClassList(classList){
+        for (let cl of classList){
+            if (cl.startsWith(this._getPositionClassName(''))) {
+                return cl
+            }
+        }
+        throw new ReferenceError(`${this.constructor.name}: could not find right class`)    
+    }
+
+    _getRightLabelOutOfClassList(classList){
+        let toParse = this._getClassWithRightLabelOutOfClassList(classList)
+        try {
+            console.log(typeof(toParse.split('-')[3]))
+            return toParse.split('-')[3]
+        } catch(e) {
+            throw new ReferenceError(`${this.constructor.name}: could not find fight class`)
+        }        
+    }
+    _changeMovablesClass(newLabel){
+        let movable = this.shadowRoot.querySelector('.slider-movable')
+        console.log(movable.classList)
+        movable.classList.remove(this._getClassWithRightLabelOutOfClassList(movable.classList))
+        movable.classList.add(this._getPositionClassName(newLabel))        
+    }
+
+    addEventListenersToLabelsAndPlaceholders(){
+        let labels = this.shadowRoot.querySelectorAll('.position-placeholder-label')
+        let placeholders = this.shadowRoot.querySelectorAll('.position-placeholder')
+        
+        // for (let label of labels) {
+        //     label.addEventListener('click', (e) => {
+        //         let targetLabel = this._getClassWithRightLabelOutOfClassList(e.target.classList)
+        //         this._changeMovablesClass(targetLabel)
+        //         this.setAttribute('data-position', this._getRightLabelOutOfClassListtargetLabel)
+        //     })
+        // }
+        for (let placeholder of placeholders) {
+            placeholder.addEventListener('click', (e) => {
+                // let targetClass = this._getClassWithRightLabelOutOfClassList(e.target.classList)
+                let targetLabel = this._getRightLabelOutOfClassList(e.target.classList)
+                this._changeMovablesClass(targetLabel)
+                this.setAttribute('data-position', targetLabel)
+            })
+        } 
+    }
+
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name == 'data-position') {
+
+        } else if (name == 'data-position') {
+            // this._changeMovablesClass(newValue)
+        } else if (name == 'data-label-set'){
+            this.labelSet = newValue;
+            this._restartWidget();
+            this.addEventListenersToLabelsAndPlaceholders();
+        } else if (name == 'data-label') {
+            this._changeLabel(newValue)
+        }
+    }
+
+    connectedCallback(){
+
+        let setInitialLabel = function(){
+            this._changeLabel(this.label)
+        }.bind(this)
+        let setInitialPosition = function(){
+            
+        }.bind(this)
+        this.addEventListenersToLabelsAndPlaceholders();
+        setInitialLabel();
+        
+        
+    }
+
+
+
+
+}
+customElements.define('multi-switch', MultipositionalSlider)
+
+
+
+
+</script>
+    <script defer>
+
+
+// https://www.w3schools.com/charsets/ref_emoji.asp
+
+class Symbols{
+    static _object2Array(obj){
+        return Object.values(obj);
+    }
+    static getSymbolsByDN(dn) {
+        switch (dn) {
+            case 'general':
+                return Symbols.general();
+            case 'activities':
+                return Symbols.activities();
+            case 'journeys':
+                return Symbols.journeys();
+            default:
+                throw TypeError(`${this.constructor.name}: no distinguised name: ${dn}`)
+        }
+    }
+
+    static getSupportedSymbolArrayNames(){
+        return ['general', 'activities', 'journeys']
+    }
+
+    static general() {
+        let symbols = {
+            umbrela: '&#9730;',
+            star: '&#9733;',
+            phone: '&#9742;',
+            radioactive: '&#9762;',
+            sad: '&#9785;',
+            happy: '&#9786;',
+            music: '&#9835;',
+            whealchair: '&#9855;',
+            die: '&#127922;',
+            mountain: '&#9968;',
+            fuel: '&#9981;',
+            plane: '&#9992;',
+            letter: '&#9993;',
+            pencil: '&#9998;',
+            question: '&#10067;',
+            time: '&#8987;',
+            city: '&#127747;',
+            earth: '&#127757;',
+            moon: '&#127769;',
+            fallingStar: '&#127776;',
+            tempest: '&#127785;',
+            meal: '&#127860;'
+
+        }
+        return Symbols._object2Array(symbols);
+    }
+    static journeys() {
+        let symbols = {
+            anchor: '&#9875;',
+            justice: '&#9878;',
+            boat: '&#9972;',
+            tent: '&#9978;',
+            cactus: '&#127797;',
+            beach: '&#127958;'
+
+        }
+        return Symbols._object2Array(symbols);
+        }
+    static activities() {
+        let symbols = {
+            ball: '&#9917;',
+            ski: '&#9975;',
+            iceSkate: '&#9976;',
+            sprint: '&#127939;',
+            horse: '&#127943;',
+            meta: '&#127937;',
+            motor: '&#127949;',
+            golf: '&#127953;',
+            tenis: '&#127955;'
+        }
+        return Symbols._object2Array(symbols);
+    }
+    static other() {
+        symbols = {
+            atom: '&#9883;',
+            church: '&#9962;',
+            hotDog: '&#127789;',
+            flower: '&#127799;',
+            mushroom: '&#127812;',
+            pizza: '&#127829;',
+            movie: '&#127916;',
+            painting: '&#127912;',
+            hat: '&#127913;',
+            circus: '&#127914;',
+            commet: '&#9732;',
+            snowman: '&#9731;',
+            coffee: '&#9749;',
+            skull: '&#9760;',
+            sierpIMlot: '&#9773;'
+        }
+    }
+}
+</script>
+    <script defer>
+class ElementTemplate{
+    constructor(content, id, placeholder){
+        this.content = content
+        this.id = this._exists(id)?id:this._generateRandomId();
+        if (this._exists(document.querySelector(placeholder))){
+            this.placeholder = placeholder;
+            this._placeElement()
+        } else {
+            throw new ReferenceError(`${this.constructor.name}: there is no ${placeholder} in DOM. Cannot place element`)
+        }
+    }
+
+    _generateRandomId(){
+        return Math.random().toString(36).slice(2,9);
+    }
+
+
+    _makeElement(html) {
+        let template = document.createElement('template');
+        template.innerHTML = html;
+        let clone = template.content.cloneNode(true)
+        this.elementHandle = clone;
+        return clone
+    }
+
+    removeMe() {
+        try{
+            document.querySelector(document.getElementById(this.id))
+        } catch(e) {
+            console.log(`Cannot remove ${this.id} from DOM`)
+        } 
+        delete this
+    }
+
+    _exists(expression) {
+        if (expression != undefined && expression != null) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    _getTemplate(){
+        return `
+            <div ${this.id} style="position: absolute; width: 100vw; height: 100vh; background-color: black; color: red; display: flex; align-items: center; justify-content: center">
+                This should be overwritten
+            </div>
+        `
+    }
+
+    _placeElement(){
+        document.querySelector(this.placeholder).appendChild(this._makeElement(this._getTemplate()))
+    }
+
+    getElement() {
+        return document.getElementById(this.id)
+    }
+}
+</script>
+    <script defer>
+
+
+class QuickMenuButton extends ElementTemplate {
+    constructor(symbol, id, placeholder){
+        // symbol is content in parent class
+        super(symbol, id, placeholder)
+        this.symbol = symbol;
+    }
+
+    _getTemplate(){
+        return `
+            <div id=${this.id} class="center quick-button">
+                ${this.content}
+            </div>
+        `
+    }
+}
+
+
+class QuickMenu extends ElementTemplate {
+    constructor(buttonDescriptors, id, placeholder) {
+        super('', id, placeholder);
+        if (this._exists(buttonDescriptors))
+        {
+            this.buttonDescriptors = buttonDescriptors
+            this.menuContent = document.querySelector(".quick-menu")
+            this.menuContentSelector = '.quick-menu'
+            this._createAllButtons();
+        } else {
+            throw new ReferenceError(`${this.constructor.name} empty button desctiptors`)
+        }
+        
+    }
+
+    _getTemplate() {
+        return `
+            <div id = ${this.id} class = "quick-menu center">
+            </div>
+        `
+    }
+    _createSingleButton(symbol, id, onClick) {
+        let button = new QuickMenuButton(symbol, id, this.menuContentSelector)
+        button.getElement().addEventListener('click', onClick)
+    }
+
+    _createAllButtons(){
+        for (let button of this.buttonDescriptors){
+            let {symbol, id, onClick} = button;
+            this._createSingleButton(symbol, id, onClick)
+        }
+    }
+}
+
+class StoryCubesMenu{
+    constructor(placeholder, handlers){
+        this.placeholder = placeholder;
+        this._extractHandlers(handlers);
+        new QuickMenu(this._getButtonDescriptors(), 'storyCubeMenuId', this.placeholder)
+        
+    }
+    doNothing(){
+        console.log(e.target)
+    }
+    _extractHandlers(handlers){
+        // if (!this._exists(handlers)) handlers = {}
+        let {drawAllElements, openSettingsHandler, openAboutHandler, openRulesHandler} = handlers;
+        this.redrawAllHandler = drawAllElements;
+        this.openAboutHandler = openAboutHandler;
+        this.openRulesHandler = openRulesHandler;
+        this.openSettingsHandler = openSettingsHandler;
+    }
+    _getButtonDescriptors() {
+        return [
+            {
+                name: 'drawAllElements',
+                symbol: '&#8635;',
+                onClick: this.redrawAllHandler,
+                id: 'drawAllElementsButtonId'
+            },
+            {
+                name: 'settingsMenu',
+                symbol: '&#9776;',
+                onClick: this.openSettingsHandler,
+                id: 'openSettingsMenu'
+            },
+            {
+                name: 'rulesMenu',
+                symbol: '&#9757;',
+                onClick: this.openRulesHandler,
+                id: 'openRulesMenu'
+            },
+            {
+                name: 'About',
+                symbol: '@',
+                onClick: this.openAboutHandler,
+                id: 'openAboutMenu'
+            }
+
+        ]
+    }
+}
+</script>
+    <script defer>
+class ModalGeneral{
+    constructor(content, id, placeholder='body', onClose = ()=>{}){
+        this._throwNoContentExceptionIfContentNotValid(content)
+        this.id = Math.random().toString(36).split(2, 9)
+        this.contentAsString = typeof(content) == "string"?content:'';
+        this.createModal(placeholder)
+        if (typeof(content)=='object') {this.addContentIfObject(content)}
+        this.addCloseEvent(onClose)
+    }
+
+    _getTemplate(){
+        return `
+            <div id=${this.id} class = "modal-cover center">
+                <div class = "modal-body column">
+                    
+                        <div class = "modal-title-bar">
+                            <div class="quick-button modal-shut-button center">&times;</div>
+                        </div>
+                        <div class = "modal-content">
+                            ${this.contentAsString}
+                        </div>
+                    
+                </div>
+            </div>
+        `
+    }
+
+    _isContentValid(content){
+        let isValid = true;
+        isValid = (content == undefined || content == null)?false:true;
+        if (!isValid) {return false}
+        isValid = (typeof(content) == 'string' || typeof(content) == 'objct')?true:false;
+        return isValid;
+    }
+
+    _throwNoContentExceptionIfContentNotValid(content){
+        if (this._isContentValid(content) == false) {
+            throw new TypeError(`${this.constructor.name}: Content is not valid`)
+        }
+    }
+
+    _removeModal(onClose) {
+        try{
+            let thisElement = document.getElementById(this.id);
+            thisElement.parentNode.removeChild(thisElement)
+            onClose();
+        } catch(e) {
+            throw new Error(`${this.constructor.name} cannot remove modal ${this.id} from DOM ${e}`)
+        }
+        delete this
+    }
+
+    _returnPlaceholderElementIfExists(placeholder){
+        let placeholderAsElement = document.querySelector(placeholder);
+        if (placeholderAsElement != null || placeholderAsElement != undefined) {
+            return placeholderAsElement
+        } else {
+            throw new ReferenceError(`${this.constructor.name}: element with selector ${placeholder} does not exist`)
+        }
+    }
+
+    createModal(placeholder){
+        let template = document.createElement('template');
+        let destination = this._returnPlaceholderElementIfExists(placeholder)
+        template.innerHTML = this._getTemplate();
+        destination.appendChild(template.content.cloneNode(true))
+    }
+
+    addContentIfObject(contentAsObject){
+        document.getElementById(this.id).document.querySelector('.modal-content').appendChild(contentAsObject)
+    }
+
+    addCloseEvent(onClose) {
+        let button = document.getElementById(this.id).querySelector('.modal-shut-button');
+        
+        button.addEventListener('click', this._removeModal.bind(this, onClose))
+    }
+}
+
+
+
+</script>
+    <script defer>
+class AboutModal{
+    constructor(){
+        this.modal = new ModalGeneral(this._getContentAsString(), 'aboutModalId', 'body', ()=>{})
+    }
+    _getContentAsString(){
+        return `
+        <div class = "text-big">
+            <p>
+                My name is Marek Gudalewicz. I made this application as a training in web developement, and as a help to practice Table Topics before Toastmasters 
+                meetings. Idea is to tell a story using as many randomly selected images as possible.
+            </p>
+            <p>
+                There are some rules regarding story preparation and story last time. Of course it is difficult to invent a good story in 30s, so first attempts 
+                might take longer.
+            </p>
+            <p>
+                In menu one might find what extentions shell be used, and a number of dices. Numbers of cubes are predefined, so user might choose one third of cubes for
+                opening, one third for plot, and one third for endint of the story.
+            </p>
+            </p>
+                If menu is closed without any changed, dices will not be rolled again. In case of any change to application state, dices will be rolled again.
+                Application state will be stored in <i>localStorage</i>, so number of cubes and extentions used can be remembered for a next game.</b>
+            </p>
+            <p>
+                Images are selected randomly, but they will never repeat. Images are selected from one set, that is not realy divided into cubes or any subsets, 
+                so in this game any combination of cubes can appear. This is different from traditional game, as in real cubes images on one dice will never appear next to 
+                each other.
+            </p>
+            <p>Images may look different, depending of brawser used. Tested on Chrome and Opera.</p>
+            <p>In near future more there will be more symbols and extentions added.</p>
+        </div>
+        `
+        
+    }
+}
+</script>
+    <script defer>
+class SettingsModal{
+
+    // DESCRIPTOR
+    // [
+    //     {
+    //         groupName: string,
+    //         listOfSwitches: [
+    //             {
+    //                 type: string,
+    //                 label: string,
+    //                 handler: 'function',
+    //                 defaultValue: 'string'
+    //             }
+    //         ]
+    //     }
+    // ]
+    // [
+    //     {
+    //         groupName: "Extentions",
+    //         listOfSwitches: [
+    //             {
+    //                 type: string,
+    //                 label: string,
+    //                 handler: 'function',
+    //                 defaultValue: 'string'
+            //         options: 'in case of radio'
+    //             }
+    //         ]
+    //     }
+    // ]
+
+
+
+    constructor(descriptor, onClose, placeholderSelector){
+        this.handlersMap = []
+        this.contentElement = this._prepareContentElement(descriptor)
+        this.parentModal = new ModalGeneral(this.contentElement,'settingsModal', 'body', onClose)
+        this.id = this._getRandomId();
+        
+        let settingsElement = this._stringToElement(this.contentElement)
+        try{
+            document.querySelector(placeholderSelector).appendChild(settingsElement)
+        } catch(e) {
+            NiceLogger.logError(`${this.constructor.name}: probably placeholderSelector is not valid`)
+        }
+        this.onClose = onClose;
+        this._applyEvents();
+    }
+
+    _getRandomId(){
+        return Math.random().toString(36).split(2,9);
+    }
+
+    _singleObjectHasAllKeys(obj, mandatoryKeys){
+        let nrOfMandatoryKeys = mandatoryKeys.length;
+        let objKeys = Object.keys(obj)
+        let nrOfKeys = 0;
+        for(let key of mandatoryKeys){
+            if (!objKeys.includes(key)) {return false}
+        }
+        return true;
+    }
+
+    _isDescriptorValid(descriptor) {
+        let singleObjectHasAllKeys = function(obj) {
+            let mandatoryKeys = ['groupName', 'listOfSwitches'];
+            return this._singleObjectHasAllKeys(obj, mandatoryKeys)
+        }
+        let allObjectsHaveAllKeys = function(){
+            return descriptor.reduce((acc, element) => {
+                if (acc == false) {return false} 
+                else {return singleObjectHasAllKeys(element)}
+            })
+        }
+        let conditions = [
+            (descriptor == undefined || descriptor == null),
+            !Array.isArray(descriptor),
+            descriptor.length == 0,
+            !allObjectsHaveAllKeys()
+        ]
+        for (let condition of conditions) {
+            if (!condition) {return false}
+        }
+        return true
+    }
+
+    _isSwitchDescriptorValid(switchDescriptor){
+        let mandatoryKeys = ['type', 'label', 'handler', 'defaultValue']
+        return this._singleObjectHasAllKeys(switchDescriptor, mandatoryKeys)
+    }
+
+    _stringToElement(str){
+        let template = document.createElement('template');
+        template.innerHTML = str;
+        return template.content.cloneNode(true)
+    }
+
+    _prepareSingleInput(descriptor, id) {
+        if (!this._isSwitchDescriptorValid(descriptor)){
+            throw new TypeError(`${this.constructor.name}: switch descriptor is not valid. Should have keys {type: string, label: string, handler: function, defaultValue: string'`)
+        } else {
+            switch(descriptor.type){
+                case 'checkbox':
+                    return `<slide-box id=${id} data-is-on='${descriptor.defaultValue}' data-label='${descriptor.label}'></slide-box>`
+                case 'radioButtonGroup':
+                    return `<multi-switch id = ${id} data-label='${descriptor.label}' data-position='${descriptor.defaultValue}' data-label-set='${descriptor.options}'></multi-switch>`
+                default:
+                    throw new TypeError(`${this.constructor.name}: Not supported input type`)
+            }
+        }
+    }
+
+    
+
+    _mapIdToHandler(inputId, inputHandler) {
+        this.handlersMap.push(
+            {
+                id: inputId,
+                handler: inputHandler
+            }
+        )
+    }
+
+    _applyEvents(){
+        for (let element of this.handlersMap) {
+            document.getElementById(element.id).addEventListener('click', element.handler)
+        }
+    }
+
+    _arrayToString(arr){
+        return arr.reduce((acc, item) => {
+            return acc + item + '';
+        })
+    }
+
+    _prepareGroupOfInputs(title, listOfSwitches) {
+        let switches = function() {
+            return listOfSwitches.map((item, index) => {
+                let newId = this.id + this._getRandomId() + '_' + index
+                this._mapIdToHandler(newId, item.handler)
+                return `${this._prepareSingleInput(item, newId)}`
+            })
+        }.bind(this)
+        return `<div class = "list-of-settings">
+                    <div class = "list-of-settings-title">${title}</div>
+                    ${this._arrayToString(switches())}
+                </div>`
+    }
+
+    _prepareContentElement(descriptor) {
+        let output = ''
+        let settingMenus = function() {
+            return descriptor.map((item, index) => {
+                return this._prepareGroupOfInputs(item.groupName, item.listOfSwitches)
+            })
+        }.bind(this)
+        if (!this._isDescriptorValid){
+            throw new TypeError(`${this.constructor.name}: descriptor is not valid. Should be array of objects {groupName, listOfSwitches}`)
+        }
+        return `
+        <div class="settings-wrapper center">
+            ${this._arrayToString(settingMenus())}
+        </div>
+        `
+    }
+
+}
+</script>
+    <script defer>
+class RulesModal{
+
+    constructor(placeholderSelector){
+        this.contentElement = this._prepareContentElement()
+        this.parentModal = new ModalGeneral(this.contentElement,'settingsModal', 'body', ()=>{})
+        this.id = this._getRandomId();
+        
+        let settingsElement = this._stringToElement(this.contentElement)
+        try{
+            document.querySelector(placeholderSelector).appendChild(settingsElement)
+        } catch(e) {
+            NiceLogger.logError(`${this.constructor.name}: probably placeholderSelector is not valid`)
+        }
+
+    }
+
+    _getRandomId(){
+        return Math.random().toString(36).split(2,9);
+    }
+
+
+    _stringToElement(str){
+        let template = document.createElement('template');
+        template.innerHTML = str;
+        return template.content.cloneNode(true)
+    }
+
+    
+
+
+    _prepareContentElement() {
+        let output = `
+
+         <div class = 'row'>
+            <div class = "center tale-structure column">
+                <span class = "center color color-none label">Story, not question answer</span>
+                <div class = "center color-black tale-structure-content tale-structure-begin">Opener</div>
+                <div class = "center tale-structure-content tale-structure-body">Body</div>
+                <div class = "center color-black tale-structure-content tale-structure-ending">Conclusion</div>
+            </div>
+
+            <div class = "color-section-content column">
+                <div class = ' row center entry'>
+                    <div class = 'color color-none center'>
+                        &le;30s
+                    </div>
+                    <span>Preparation</span>
+                 </div>
+                <div class = 'row center entry'>
+                    <div class = 'color color-green center'>
+                       &ge;1min
+                    </div>
+                    <span>Free to stop</span>
+                 </div>
+                <div class = 'row center entry'>
+                    <div class = 'color color-yellow center'>
+                        &ge;1:30min
+                    </div>
+                    <span>Conclude</span>
+                 </div>
+                <div class = 'row center entry'>
+                    <div class = 'color color-red center'>
+                        &ge;2min
+                    </div>
+                    <span>Best time to end!</span>
+                 </div>
+                <div class = 'row center entry'>
+                    <div class = 'color color-black center'>
+                        &ge;2:30min
+                    </div>
+                    <span class = "skull">&#9760;</span>
+                 </div>
+
+            </div>
+        </div>
+
+        `
+
+        return output;
+    }
+
+}
+</script>
+    <script defer>
+
+class Cube {
+    constructor(props){
+        if (props) {
+            if (props.onClick) { this.onClick = onClick}            
+            if (propr.id) {this.id = id}
+            if (prop.symb) (this.symb = this.symb)
+        }
+        this.cube = this._makeElement()
+        
+    }
+
+    _getTemplate() {
+        let temp = `
+            <div class="center cube">
+                ${this.symb?this.symb:''}
+            </div>
+        `
+        return temp
+    }
+    setContent(symb){
+        this.cube.innerHTML = symb;
+        this.cube.setAttribute('id', '5')
+    }
+    _makeElement() {
+        // let template = document.createElement('template');
+        // template.innerHTML = this._getTemplate();
+        // let cube = template.content.cloneNode(true);
+
+        let cube = document.createElement('div');
+        cube.classList.add('center');
+        cube.classList.add('cube');
+        cube.innerHTML = this.symb?this.symb:'';
+        
+        if (this.onClick) {cube.setAttribute('onClick', this.onClick); cube.classList.add('hoverable')}
+        if (this.id) {cube.setAttribute('id', this.id)}
+        return cube
+    }
+
+    getCube() {
+        return this.cube;
+    }
+    getSymbol() {
+        return this.cube.innerHTML
+    }
+}
+
+
+</script>
+    <script defer>
+class CubeSet{
+    constructor(arrayOfSymbols, nrOfCubes, cubePlaceholder){
+        // try{
+            this.nrOfCubes = 0;
+            this.arrayOfSymbols = this._setInternalProps(arrayOfSymbols, "Array of all symbols that could be displayed in cubes not passed")
+            this.nrOfCubes = this._setInternalProps(parseInt(nrOfCubes), "Nr of cubes not passed")
+            this.cubePlaceholder = this._setInternalProps(cubePlaceholder, "Placeholder for cubes not passed")
+            this.drawingIterator = new DrawingIterator(this.arrayOfSymbols);
+
+            this.currentArray = [];
+            this.cubeCreator = Cube;
+
+            this.setOfCubes = this._makeCubes();
+            this._placeCubes();
+            this.replaceAllCubeSymbols();
+            this._createOnclickSymbolSwapForEachCube();
+
+    }
+
+
+
+    replaceAllCubeSymbols() {
+        for (let cube of this.setOfCubes) {
+            this._replaceCubeSymbol(cube)
+        }
+    }
+
+
+
+    removeAllCubes(){
+        for (let cube of this.setOfCubes) {
+            cube.getCube().parentNode.removeChild(cube.getCube())
+        }
+    }
+
+
+
+    _setInternalProps(propPassedToConstructor, errorMessage) {
+        if (propPassedToConstructor != undefined) {
+            return propPassedToConstructor
+        } else {
+            throw new TypeError(`${this.constructor.name}: ${errorMessage}`)
+        }
+    }
+
+
+
+    _makeCubes(){
+        let cubes = [];
+        for(let i = 0; i<this.nrOfCubes; i++) {
+            let cube = new this.cubeCreator()
+            cubes.push(cube)
+        }
+        return cubes
+    }
+
+
+
+    _placeCubes(){
+        for(let cube of this.setOfCubes) {
+            this.cubePlaceholder.appendChild(cube.getCube())
+        }
+    }
+
+
+
+    _createOnclickSymbolSwapForEachCube() {
+        for (let cube of this.setOfCubes) {
+            let cb = this._replaceCubeSymbol.bind(this, cube)
+            cube.getCube().addEventListener('click', cb)
+        }
+    }
+
+    _getSymbolsToRemove(){
+        let arr = [];
+        for (let item of this.setOfCubes){
+            arr.push(item.getSymbol())
+        }
+        return arr
+    }
+
+
+    _replaceCubeSymbol(cube) {
+        try{
+            cube.setContent(this.drawingIterator.drawSymbols(1, this._getSymbolsToRemove()));
+        } catch(e) {
+            NiceLogger.logInfo(`${this.constructor.name}: symbols cannot be injected into cubes. Looks like no array of symbols passed.`)
+        }
+    }
+
+}
+
+
+
+class DrawingIterator {
+    constructor(arrayOfSymbols){
+        // try{
+            this.arrayOfSymbols = this._setInternalProps(arrayOfSymbols, "Array of symbols not passed. Cannot continue")
+            this.runtimeArrayOfSymbols = this.arrayOfSymbols.slice(0, this.arrayOfSymbols.length)
+            this.symbolsToRemove = [];
+            this.drawingIteratorInstance = this._drawingIterator();
+        // } catch (error) {
+
+        // }
+    }
+
+
+    _setInternalProps(propPassedToConstructor, errorMessage) {
+        if (propPassedToConstructor != undefined) {
+            return propPassedToConstructor
+        } else {
+            throw new TypeError(`${this.constructor.name}: ${errorMessage}`)
+        }
+    }
+
+
+    _randomIndex(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    printSymbolsToRemove(){
+        for (let i of this.symbolsToRemove) {
+        }
+    }
+
+    _getNewSymbolArray(){
+        let arr = [...this.arrayOfSymbols]
+        let removed = []
+        this.printSymbolsToRemove();
+        return arr
+    }
+
+
+    areHTMLSymbolsEqual(a, b){
+        let elementA = document.createElement('div')
+        let elementB = document.createElement('div')
+        elementA.innerHTML = a;
+        elementB.innerHTML = b;
+        if (elementA.innerHTML == elementB.innerHTML) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    _doesArrayContain(arrayToCheck, element) {
+        for(let item of arrayToCheck) {
+            if (this.areHTMLSymbolsEqual(element, item)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    _getUniqueSymbol(symbolsAlreadyTaken) {
+        let nextSymbol = this.drawingIteratorInstance.next().value;
+        if (symbolsAlreadyTaken.length >= this.arrayOfSymbols.length) {
+            throw new ReferenceError(`${this.constructor.name}: symbolsAlreadyTeaken.length >= arrayOfSymbols.lenght. No possibility to draw a unique symbol`)
+        } else if(this._doesArrayContain(symbolsAlreadyTaken, nextSymbol)) {
+            return this._getUniqueSymbol(symbolsAlreadyTaken)
+        } else {
+            return nextSymbol
+        }
+
+    }
+
+    _drawingIterator() {
+        this.runtimeArrayOfSymbols = this._getNewSymbolArray()
+        return {
+            next: function (){
+                if (this.runtimeArrayOfSymbols.length == 0) {
+                    this.runtimeArrayOfSymbols = this._getNewSymbolArray()
+                }
+                let rand = this._randomIndex(this.runtimeArrayOfSymbols.length);
+                let randElement = this.runtimeArrayOfSymbols[rand];
+                this.runtimeArrayOfSymbols.splice(rand, 1);
+                return {
+                    value: randElement,
+                    done: this.runtimeArrayOfSymbols.length>0?false:true
+                }
+            }.bind(this)
+        }    
+    }
+
+
+    drawSymbols(x, symbolsToRemove){
+        this.printSymbolsToRemove();
+        let randomSymbols = []
+        for (let i = 0; i<x; i++) {
+            randomSymbols.push(this._getUniqueSymbol(symbolsToRemove))
+        }
+        return randomSymbols;
+    }
+}
+
+    
+</script>
+    <script defer>
+class CubeManager{
+    constructor(props){
+        // this.state = {
+        //     chosenSymbolArrays: [1, 2],
+        //     nrOfCubes: 6
+        // }
+        console.warn('Some issue when to few cubes to create a plot, see how looks like in devtool phone simulator')
+        this.state = this._getInitialState({
+            chosenSymbolArrays: [0],
+            nrOfCubes: 6
+        })
+
+        if (props) {
+            if (props.nrOfCubes) {this.state.nrOfCubes = parseInt(props.nrOfCubes)}
+            if (props.arrOfCat) {this.arrOfCat = props.arrOfCat}
+            if (props.placeholder) {this.placeholder = props.placeholder}
+        }
+
+
+        this.symbolDB = Symbols;
+        this.supportedSymbolArrayNames = this.symbolDB.getSupportedSymbolArrayNames()
+        this.supportedNrOfCubes = [3, 6, 9, 12];
+        // this.nrOfCubes = this.nrOfCubes?this.nrOfCubes:this.state.nrOfCubes;
+        this.arrOfCat = this._arrOfCategories()
+        this.placeholder = this.placeholder?this.placeholder:document.querySelector('body')
+
+
+        this.arrayOfSymbols = this.setOfSymbols();
+
+        this.cubeCreator = CubeSet;
+        this.createSetOfCubes();
+
+        new StoryCubesMenu('.root', {
+            drawAllElements: this.recreateSetOfCubes.bind(this),
+            openAboutHandler: this.createAboutModal,
+            openRulesHandler: this.createRulesMenu,
+            openSettingsHandler: this.createSettingsModal.bind(this)
+        })
+    }
+
+    _setStateIncludingLocalStorage(defaultState){
+        [_symbolArray, _nrOfCubes] = defaultState;
+        let localStorageSymbols = localStorage.getItem('chosenSymbolArrays')
+        let localStorageNrOfCubes = localStorage.getItem('nrOfCubes')
+        if (localStorageSymbols == null) {
+            this.state.chosenSymbolArrays = defaultState.chosenSymbolArrays
+        } else {
+            this.state.chosenSymbolArrays = localStorageSymbols
+        }
+        if (localStorageNrOfCubes == null) {
+            this.state.nrOfCubes = defaultState.localStorageNrOfCubes
+        } else {
+            this.state.chosenSymbolArrays = defaultState.nrOfCubes
+        }
+    }
+
+    _mapIndexesToSymbolArrayNames(arrayOfIndexes) {
+        let mapFunction = function(current, index, arr) {
+            return this.supportedSymbolArrayNames[parseInt(current)]
+        }.bind(this)
+        let output = arrayOfIndexes.map(mapFunction)
+        return output
+    }
+
+    _arrOfCategories() {
+        console.log(this.state.chosenSymbolArrays)
+        console.log(Array.isArray(this.state.chosenSymbolArrays))
+        return this._mapIndexesToSymbolArrayNames(this.state.chosenSymbolArrays);
+        return this.arrOfCat?this.arrOfCat:this._mapIndexesToSymbolArrayNames(this.state.chosenSymbolArrays);
+    }
+
+
+
+    createSetOfCubes() {
+        this.setOfCubes = new this.cubeCreator(this.setOfSymbols(), this.state.nrOfCubes, this.placeholder)
+    }
+
+    removeSetOfCubes() {
+        
+        this.setOfCubes.removeAllCubes();
+    }
+
+    recreateSetOfCubes() {
+        try{
+            this.removeSetOfCubes();
+            delete this.setOfCubes;
+        } catch (e){            
+            NiceLogger.logError(this.constructor.name + ': Cubes cannot be removed from container');
+        }
+        try{
+            this.createSetOfCubes()
+        } catch (e) {
+            NiceLogger.logError(`${this.constructor.name}: cubes cannot be created. Contact developer.`)
+        }
+    }
+
+    createAboutModal() {
+        // let content = [];
+        // for(let i = 0; i < 1000; i++){
+        //     content.push(`Lorem ipsum ${i}`)
+        // }
+        // new ModalGeneral(`<ul>${content.reduce((ac, element) => {return ac + '' + `<li>${element}</li>`})}</ul>`);
+        new AboutModal();
+    }
+    onClose() {
+        this.recreateSetOfCubes()
+    }
+
+    createSettingsModal() {
+        let settingsManager = new SettingsManager(this.supportedSymbolArrayNames, this.supportedNrOfCubes, this.state)
+        let sectionsOfSettingsMenu = [
+            this._settingsExtentionsGroup(settingsManager.topicSymbolGroupHandler.bind(settingsManager)), 
+            this._settingsNrOfCubesGroup(settingsManager.nrOfCubesChangeHandler.bind(settingsManager))
+        ]
+        new SettingsModal(sectionsOfSettingsMenu, this._mergeState.bind(this, settingsManager.onClose()))
+    }
+
+    createRulesMenu() {
+        let rulesMenu = new RulesModal();
+    }
+
+    _mergeState(newState){
+        let areArraysEqual = function(arr1, arr2) {
+            let nrOfEqualElements = 0;
+            let len1 = arr1.length;
+            if (len1 != arr2.length) {
+                return false;
+            } else {
+                arr2.forEach((element, index) => {
+                    if (arr1.includes(element)) {
+                        nrOfEqualElements++;
+                    } else {
+                        return false;
+                    }
+                })
+            }
+            if (nrOfEqualElements == len1) {return true} else {
+                throw new Error(`${this.constructor.name}: there is something really wrong in _mergeState.areArraysEqual, because this error should be unreachable code`)
+            }
+        }.bind(this)
+        let areElementsEqualShalow = function(el1, el2) {
+            if (Array.isArray(el1)) {
+                return areArraysEqual(el1, el2)
+            } else {
+                return el1 == el2 ? true : false;
+            }
+        }.bind(this)
+        let nrOfChangedKeys = 0;
+        for (let key in this.state) {
+            if (!areElementsEqualShalow(this.state[key], newState[key])){
+                this.state[key] = newState[key]
+                localStorage.setItem(key, newState[key])    
+                nrOfChangedKeys++;
+            }
+        }
+        if (nrOfChangedKeys > 0) this.recreateSetOfCubes()
+    }
+
+    _getInitialState(defaultState) {
+        let isConversionToArrayNeeded = function(key) {
+            let keysForConverion = ['chosenSymbolArrays']
+            return (keysForConverion.includes(key)) ? true : false;
+        }
+        let convertStrToArrayIfNeeded = function(key, value) {
+            return isConversionToArrayNeeded(key) ? value.split(',') : value;
+        }
+        let newState = {};
+        for (let key in defaultState) {
+            let newEntry = '';
+            let fromLocalStorage = localStorage.getItem(key)
+            if (fromLocalStorage == null || fromLocalStorage == undefined) {
+                newState[key] = defaultState[key]
+            } else {
+                console.log(convertStrToArrayIfNeeded(key, localStorage.getItem(key)))
+                newState[key] = convertStrToArrayIfNeeded(key, localStorage.getItem(key))
+            }
+        }
+        return newState;
+    }
+
+    setOfSymbols() {
+        let arr = [];
+        for (let cat of this._arrOfCategories()) {
+            arr = [...arr, ...this.symbolDB.getSymbolsByDN(cat)]
+        }
+        return arr;
+    }
+
+    _settingsNrOfCubesGroup(changeHandler){
+        let supportedNrOfCubesAsString = function(){        
+            return this.supportedNrOfCubes.join(',')
+        }.bind(this)
+        return {
+            groupName: 'Number of cubes',
+            listOfSwitches: [{
+                type: 'radioButtonGroup',
+                label: '',
+                handler: changeHandler.bind(this),
+                defaultValue: this.state.nrOfCubes,
+                options: supportedNrOfCubesAsString()
+            }]
+        }
+    }
+
+    _settingsExtentionsGroup(extentionsCHangeHandler){
+        let providedExtentions = this.supportedSymbolArrayNames;
+        let chosenSymbolArrays = this._mapIndexesToSymbolArrayNames(this.state.chosenSymbolArrays)
+        let changeHandler = extentionsCHangeHandler
+        let listOfSwitches = [];
+        for (let extention of providedExtentions) {
+            let newExtention = {};
+            newExtention = {
+                type: 'checkbox',
+                label: extention,
+                handler: changeHandler.bind(this),
+                defaultValue: chosenSymbolArrays.includes(extention)?true:false
+            }
+            listOfSwitches.push(newExtention)
+        }
+        return {
+            groupName: 'Extentions',
+            listOfSwitches: listOfSwitches
+        }
+    }
+
+}
+
+class SettingsManager {
+    constructor(supprotedNames, supportedNumbersOfCubes, currentState){
+        
+        this.supportedNames = [...supprotedNames]
+        this.supportedNumbersOfCubes = [...supportedNumbersOfCubes]
+        this.stateCopy = this._copyObject(currentState)
+    }
+
+    _copyObject(obj) {
+        return JSON.parse(JSON.stringify(obj))
+    }
+
+    _getLabel(e) {
+        return  e.target.dataset.label
+    }
+
+    _mapIndexesToSymbolArrayNames(arrayOfIndexes) {
+        let mapFunction = function(current, index, arr) {
+            return this.supportedNames[parseInt(current)]
+        }.bind(this)
+        let output = arrayOfIndexes.map(mapFunction)
+        return output
+    }
+
+    _isLabelSupported(label) {
+        return this.supportedNames.includes(label)?true:false
+    }
+
+    _mapTopicToIndex(label){
+        return this.supportedNames.indexOf(label)
+    }
+
+    isLabelInLocalState(label) {
+        return this._mapIndexesToSymbolArrayNames(this.stateCopy.chosenSymbolArrays).includes(label)?true:false
+    }
+    removeLabelFromLocalState = function(label){
+        let mappedTopicToIndex = this._mapTopicToIndex(label)
+        this.stateCopy.chosenSymbolArrays.splice(this.stateCopy.chosenSymbolArrays.indexOf(this._mapTopicToIndex(label)), 1)
+    }
+    addLabelToLocalState(label) {
+        let labelIndex = this.supportedNames.indexOf(label)
+        this.stateCopy.chosenSymbolArrays.push(labelIndex)
+    }
+
+    topicSymbolGroupHandler(e){
+        let label = e.target.dataset.label
+        if (label != undefined) {
+            if (this._isLabelSupported(label)){
+                if (this.isLabelInLocalState(label)) {
+                    this.removeLabelFromLocalState(label)
+                } else {
+                    this.addLabelToLocalState(label)
+                }
+            }
+        }
+    }
+
+    nrOfCubesChangeHandler(e){
+        try{
+            let newNrOfCubes = parseInt(e.target.dataset.position);
+            if (newNrOfCubes == NaN) throw new TypeError(`${this.constructor.name}: label passed from multiswitch parses to NaN: ${e.target.dataset.position}`)
+            if (this.supportedNumbersOfCubes.includes(newNrOfCubes)) {
+                this.stateCopy.nrOfCubes = newNrOfCubes
+            } else {
+                throw new TypeError(`${this.constructor.name}: nr of cubes in multiswitch is corrupted. There is no ${newNrOfCubes} value supported.`)
+            }
+        } catch(err) {
+            NiceLogger.logError(err)
+        }
+    }
+
+    onClose() {
+        return this.stateCopy
+    }
+
+
+}
+
+
+// [
+//     {
+//         groupName: "Extentions",
+//         listOfSwitches: [
+//             {
+//                 type: string,
+//                 label: string,
+//                 handler: 'function',
+//                 defaultValue: 'string'
+//             }
+//         ]
+//     }
+// ]
+
+let manager = {}
+
+window.addEventListener('DOMContentLoaded', (event) => {
+    let manager = new CubeManager({
+        placeholder: document.querySelector('.wrapper')
+    })
+});
+
+// let manager = new CubeManager({
+//     placeholder: document.querySelector('.wrapper')
+// })
+
+</script>
+    
+
+</head>
+<body>
+    <div class="root center column">
+        <cube-logo>PRACTICE STORY TELLING</cube-logo>
+        <div class="cube-wrapper wrapper center">
+
+        </div>
+    </div>
+</body>
+</html>
